@@ -1,4 +1,10 @@
-http://:8080 {
+{$PUBLIC_URL} {
+	tls {
+		dns cloudflare {env.CLOUDFLARE_API_TOKEN}
+		propagation_delay 5s
+		resolvers 173.245.59.96 172.64.33.96
+	}
+
 	handle /oauth2/* {
 		reverse_proxy oauth2-proxy:4180 {
 			header_up X-Real-IP {client_ip}
@@ -40,7 +46,13 @@ http://:8080 {
 	}
 }
 
-http://:8081 {
+{$SANDBOX_PUBLIC_URL} {
+	tls {
+		dns cloudflare {env.CLOUDFLARE_API_TOKEN}
+		propagation_delay 5s
+		resolvers 173.245.59.96 172.64.33.96
+	}
+
 	reverse_proxy {$OPENCLAW_SANDBOX_URL} {
 		header_up X-Real-IP {client_ip}
 		header_up X-Forwarded-For {client_ip}
