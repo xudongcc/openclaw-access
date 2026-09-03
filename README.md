@@ -10,7 +10,7 @@ Local GitHub authentication for OpenClaw using Caddy and oauth2-proxy.
 - Enhanced Container Isolation is disabled because Docker Desktop host
   networking is incompatible with it.
 - A GitHub OAuth App has this callback URL:
-  `http://localhost:8080/oauth2/callback`.
+  `http://192.168.28.154:8080/oauth2/callback`.
 
 ## Start
 
@@ -27,9 +27,8 @@ docker compose config
 docker compose up -d
 ```
 
-Open <http://localhost:8080>.
+Open <http://192.168.28.154:8080> from the local network. Caddy listens on port
+`8080`; oauth2-proxy and OpenClaw remain bound to host loopback.
 
-This first-stage configuration is deliberately bound to host loopback and uses
-an insecure OAuth cookie for local HTTP testing. Before exposing it through
-`https://claw.kudeploy.com`, change the callback URL to HTTPS and set
-`--cookie-secure=true` in `compose.yaml`.
+This deployment uses plain HTTP. Use it only on a trusted local network because
+browser traffic and OAuth session cookies are not protected by TLS.
