@@ -47,7 +47,6 @@ services:
       PUBLIC_URL: ${PUBLIC_URL:-http://192.168.28.154:8080}
       PUBLIC_SCHEME: ${PUBLIC_SCHEME:-http}
       OPENCLAW_ADMIN_EMAIL: ${OPENCLAW_ADMIN_EMAIL:-me@huangxudong.com}
-      OAUTH2_PROXY_UPSTREAM: ${OAUTH2_PROXY_UPSTREAM:-oauth2-proxy:4180}
       OPENCLAW_UPSTREAM: ${OPENCLAW_UPSTREAM:-host.docker.internal:18789}
     depends_on:
       - oauth2-proxy

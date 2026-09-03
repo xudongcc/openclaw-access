@@ -1,6 +1,6 @@
 http://:8080 {
 	handle /oauth2/* {
-		reverse_proxy {$OAUTH2_PROXY_UPSTREAM} {
+		reverse_proxy oauth2-proxy:4180 {
 			header_up X-Real-IP {client_ip}
 			header_up X-Forwarded-For {client_ip}
 			header_up X-Forwarded-Proto {$PUBLIC_SCHEME}
@@ -14,7 +14,7 @@ http://:8080 {
 			request_header -X-Auth-Request-Email
 			request_header -X-OpenClaw-Scopes
 
-			forward_auth {$OAUTH2_PROXY_UPSTREAM} {
+			forward_auth oauth2-proxy:4180 {
 				uri /oauth2/auth
 				header_up X-Real-IP {client_ip}
 				header_up X-Forwarded-For {client_ip}
