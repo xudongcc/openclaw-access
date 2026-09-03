@@ -1,6 +1,6 @@
 http://:8080 {
 	handle /oauth2/* {
-		reverse_proxy 127.0.0.1:4180 {
+		reverse_proxy oauth2-proxy:4180 {
 			header_up X-Real-IP {client_ip}
 			header_up X-Forwarded-For {client_ip}
 			header_up X-Forwarded-Proto {$PUBLIC_SCHEME}
@@ -14,7 +14,7 @@ http://:8080 {
 			request_header -X-Auth-Request-Email
 			request_header -X-OpenClaw-Scopes
 
-			forward_auth 127.0.0.1:4180 {
+			forward_auth oauth2-proxy:4180 {
 				uri /oauth2/auth
 				header_up X-Real-IP {client_ip}
 				header_up X-Forwarded-For {client_ip}
@@ -31,7 +31,7 @@ http://:8080 {
 			@admin header X-Auth-Request-Email {$OPENCLAW_ADMIN_EMAIL}
 			request_header @admin X-OpenClaw-Scopes "operator.admin,operator.read,operator.write,operator.approvals,operator.questions,operator.pairing,operator.talk.secrets"
 
-			reverse_proxy 127.0.0.1:18789 {
+			reverse_proxy host.docker.internal:18789 {
 				header_up X-Real-IP {client_ip}
 				header_up X-Forwarded-For {client_ip}
 				header_up X-Forwarded-Proto {$PUBLIC_SCHEME}

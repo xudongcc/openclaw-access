@@ -3,7 +3,6 @@ name: openclaw-access
 services:
   oauth2-proxy:
     image: quay.io/oauth2-proxy/oauth2-proxy:v7.15.4
-    network_mode: host
     restart: always
     read_only: true
     security_opt:
@@ -15,14 +14,14 @@ services:
       OAUTH2_PROXY_CLIENT_SECRET: ${OAUTH2_PROXY_CLIENT_SECRET:?Set OAUTH2_PROXY_CLIENT_SECRET in .env}
       OAUTH2_PROXY_COOKIE_SECRET: ${OAUTH2_PROXY_COOKIE_SECRET:?Set OAUTH2_PROXY_COOKIE_SECRET in .env}
     command:
-      - --http-address=127.0.0.1:4180
+      - --http-address=0.0.0.0:4180
       - --provider=github
       - --email-domain=*
       - --github-org=${GITHUB_ORG:-Kudeploy}
       - --github-user=${GITHUB_USERS:-xudongcc}
       - --upstream=static://202
       - --reverse-proxy=true
-      - --trusted-proxy-ip=127.0.0.1/32
+      - --trusted-proxy-ip=172.31.250.1/32
       - --set-xauthrequest=true
       - --redirect-url=${OAUTH2_PROXY_REDIRECT_URL:-http://192.168.28.154:8080/oauth2/callback}
       - --whitelist-domain=${OAUTH2_PROXY_WHITELIST_DOMAIN:-192.168.28.154:8080}
@@ -30,10 +29,12 @@ services:
       - --cookie-samesite=lax
       - --cookie-name=_openclaw_oauth2_proxy
       - --skip-provider-button=true
+    networks:
+      access:
+        ipv4_address: 172.31.250.2
 
   caddy:
     image: caddy:2.11.4-alpine
-    network_mode: host
     restart: always
     read_only: true
     security_opt:
@@ -48,10 +49,21 @@ services:
       OPENCLAW_ADMIN_EMAIL: ${OPENCLAW_ADMIN_EMAIL:-me@huangxudong.com}
     depends_on:
       - oauth2-proxy
+    ports:
+      - "8080:8080"
     volumes:
       - ./Caddyfile:/etc/caddy/Caddyfile:ro
       - caddy-data:/data
       - caddy-config:/config
+    networks:
+      access:
+        ipv4_address: 172.31.250.3
+
+networks:
+  access:
+    ipam:
+      config:
+        - subnet: 172.31.250.0/24
 
 volumes:
   caddy-data:
