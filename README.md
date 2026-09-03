@@ -17,6 +17,7 @@ openssl rand -base64 32 | tr -- '+/' '-_'
 ```
 
 Put the generated value and the GitHub OAuth App credentials in `.env`, then
+adjust the public URL, listener, or private Docker network values if needed and
 start the stack:
 
 ```bash
