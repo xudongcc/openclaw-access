@@ -20,22 +20,15 @@ services:
       - --github-org=${GITHUB_ORG:-kudeploy}
       - --upstream=static://202
       - --reverse-proxy=true
-      - --trusted-proxy-ip=${ACCESS_GATEWAY:-172.31.250.1}/32
       - --set-xauthrequest=true
-      - --redirect-url=${OAUTH2_PROXY_REDIRECT_URL:-https://claw.kudeploy.com/oauth2/callback}
-      - --whitelist-domain=${OAUTH2_PROXY_WHITELIST_DOMAIN:-claw.kudeploy.com}
-      - --cookie-secure=${OAUTH2_PROXY_COOKIE_SECURE:-true}
+      - --redirect-url=https://claw.kudeploy.com/oauth2/callback
       - --cookie-samesite=lax
       - --cookie-name=_openclaw_oauth2_proxy
       - --skip-provider-button=true
-    networks:
-      access:
-        ipv4_address: ${OAUTH2_PROXY_IP:-172.31.250.2}
 
   caddy:
     build:
       context: ./caddy
-    image: openclaw-access-caddy:latest-cloudflare
     restart: always
     read_only: true
     security_opt:
@@ -45,34 +38,17 @@ services:
     cap_add:
       - NET_BIND_SERVICE
     environment:
-      PUBLIC_URL: ${PUBLIC_URL:-https://claw.kudeploy.com}
-      PUBLIC_SCHEME: ${PUBLIC_SCHEME:-https}
-      SANDBOX_PUBLIC_URL: ${SANDBOX_PUBLIC_URL:-https://claw-artifacts.kudeploy.com}
-      OPENCLAW_ADMIN_EMAIL: ${OPENCLAW_ADMIN_EMAIL:-me@huangxudong.com}
-      OPENCLAW_URL: ${OPENCLAW_URL:-http://host.docker.internal:18789}
-      OPENCLAW_SANDBOX_URL: ${OPENCLAW_SANDBOX_URL:-http://host.docker.internal:18790}
       CLOUDFLARE_API_TOKEN: ${CLOUDFLARE_API_TOKEN:?Set CLOUDFLARE_API_TOKEN in .env}
     depends_on:
       - oauth2-proxy
     ports:
-      - "${ACCESS_BIND_ADDRESS:-0.0.0.0}:${HTTP_PORT:-80}:80"
-      - "${ACCESS_BIND_ADDRESS:-0.0.0.0}:${HTTPS_PORT:-443}:443"
-      - "${ACCESS_BIND_ADDRESS:-0.0.0.0}:${HTTPS_PORT:-443}:443/udp"
+      - "80:80"
+      - "443:443"
+      - "443:443/udp"
     volumes:
       - ./caddy/Caddyfile:/etc/caddy/Caddyfile:ro
       - caddy-data:/data
       - caddy-config:/config
-    networks:
-      access:
-        ipv4_address: ${CADDY_IP:-172.31.250.3}
-
-networks:
-  access:
-    ipam:
-      config:
-        - subnet: ${ACCESS_SUBNET:-172.31.250.0/24}
-          gateway: ${ACCESS_GATEWAY:-172.31.250.1}
-
 volumes:
   caddy-data:
   caddy-config:

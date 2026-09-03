@@ -1,4 +1,4 @@
-{$PUBLIC_URL} {
+claw.kudeploy.com {
 	tls {
 		dns cloudflare {env.CLOUDFLARE_API_TOKEN}
 		propagation_delay 5s
@@ -9,7 +9,7 @@
 		reverse_proxy oauth2-proxy:4180 {
 			header_up X-Real-IP {client_ip}
 			header_up X-Forwarded-For {client_ip}
-			header_up X-Forwarded-Proto {$PUBLIC_SCHEME}
+			header_up X-Forwarded-Proto https
 			header_up X-Forwarded-Uri {uri}
 		}
 	}
@@ -24,38 +24,34 @@
 				uri /oauth2/auth
 				header_up X-Real-IP {client_ip}
 				header_up X-Forwarded-For {client_ip}
-				header_up X-Forwarded-Proto {$PUBLIC_SCHEME}
+				header_up X-Forwarded-Proto https
 				copy_headers X-Auth-Request-User X-Auth-Request-Email
 
 				@unauthorized status 401
 				handle_response @unauthorized {
-					redir * /oauth2/sign_in?rd={$PUBLIC_URL}{uri}
+					redir * /oauth2/sign_in?rd=https://claw.kudeploy.com{uri}
 				}
 			}
 
-			request_header X-OpenClaw-Scopes "operator.read,operator.write,operator.approvals,operator.questions"
-			@admin header X-Auth-Request-Email {$OPENCLAW_ADMIN_EMAIL}
-			request_header @admin X-OpenClaw-Scopes "operator.admin,operator.read,operator.write,operator.approvals,operator.questions,operator.pairing,operator.talk.secrets"
-
-			reverse_proxy {$OPENCLAW_URL} {
+			reverse_proxy host.docker.internal:18789 {
 				header_up X-Real-IP {client_ip}
 				header_up X-Forwarded-For {client_ip}
-				header_up X-Forwarded-Proto {$PUBLIC_SCHEME}
+				header_up X-Forwarded-Proto https
 			}
 		}
 	}
 }
 
-{$SANDBOX_PUBLIC_URL} {
+claw-artifacts.kudeploy.com {
 	tls {
 		dns cloudflare {env.CLOUDFLARE_API_TOKEN}
 		propagation_delay 5s
 		resolvers 173.245.59.96 172.64.33.96
 	}
 
-	reverse_proxy {$OPENCLAW_SANDBOX_URL} {
+	reverse_proxy host.docker.internal:18790 {
 		header_up X-Real-IP {client_ip}
 		header_up X-Forwarded-For {client_ip}
-		header_up X-Forwarded-Proto {$PUBLIC_SCHEME}
+		header_up X-Forwarded-Proto https
 	}
 }
