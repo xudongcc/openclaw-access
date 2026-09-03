@@ -1,0 +1,51 @@
+name: openclaw-access
+
+services:
+  oauth2-proxy:
+    image: quay.io/oauth2-proxy/oauth2-proxy:v7.15.4
+    network_mode: host
+    restart: unless-stopped
+    read_only: true
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    environment:
+      OAUTH2_PROXY_CLIENT_ID: ${OAUTH2_PROXY_CLIENT_ID:?Set OAUTH2_PROXY_CLIENT_ID in .env}
+      OAUTH2_PROXY_CLIENT_SECRET: ${OAUTH2_PROXY_CLIENT_SECRET:?Set OAUTH2_PROXY_CLIENT_SECRET in .env}
+      OAUTH2_PROXY_COOKIE_SECRET: ${OAUTH2_PROXY_COOKIE_SECRET:?Set OAUTH2_PROXY_COOKIE_SECRET in .env}
+    command:
+      - --http-address=127.0.0.1:4180
+      - --provider=github
+      - --email-domain=*
+      - --github-org=${GITHUB_ORG:-Kudeploy}
+      - --github-user=${GITHUB_USERS:-xudongcc}
+      - --upstream=static://202
+      - --reverse-proxy=true
+      - --trusted-proxy-ip=127.0.0.1/32
+      - --set-xauthrequest=true
+      - --redirect-url=${OAUTH2_PROXY_REDIRECT_URL:-http://localhost:8080/oauth2/callback}
+      - --cookie-secure=false
+      - --cookie-samesite=lax
+      - --cookie-name=_openclaw_oauth2_proxy
+      - --skip-provider-button=true
+
+  caddy:
+    image: caddy:2.11.4-alpine
+    network_mode: host
+    restart: unless-stopped
+    read_only: true
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    depends_on:
+      - oauth2-proxy
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy-data:/data
+      - caddy-config:/config
+
+volumes:
+  caddy-data:
+  caddy-config:
