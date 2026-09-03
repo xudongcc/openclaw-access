@@ -50,10 +50,12 @@ services:
       PUBLIC_SCHEME: ${PUBLIC_SCHEME:-http}
       OPENCLAW_ADMIN_EMAIL: ${OPENCLAW_ADMIN_EMAIL:-me@huangxudong.com}
       OPENCLAW_URL: ${OPENCLAW_URL:-http://host.docker.internal:18789}
+      OPENCLAW_SANDBOX_URL: ${OPENCLAW_SANDBOX_URL:-http://host.docker.internal:18790}
     depends_on:
       - oauth2-proxy
     ports:
       - "${ACCESS_BIND_ADDRESS:-0.0.0.0}:${ACCESS_PORT:-8080}:8080"
+      - "${ACCESS_BIND_ADDRESS:-0.0.0.0}:${SANDBOX_ACCESS_PORT:-8081}:8081"
     volumes:
       - ./caddy/Caddyfile:/etc/caddy/Caddyfile:ro
       - caddy-data:/data

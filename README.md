@@ -29,5 +29,9 @@ Open <http://192.168.28.154:8080> from the local network. Caddy listens on port
 `8080`; oauth2-proxy is available only on the private Compose network and
 OpenClaw remains bound to host loopback.
 
+MCP Apps and dashboard widgets use the dedicated, unauthenticated sandbox
+origin <http://192.168.28.154:8081>, which proxies only to OpenClaw's sandbox
+listener on port `18790`.
+
 This deployment uses plain HTTP. Use it only on a trusted local network because
 browser traffic and OAuth session cookies are not protected by TLS.

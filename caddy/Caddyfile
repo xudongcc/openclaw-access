@@ -39,3 +39,11 @@ http://:8080 {
 		}
 	}
 }
+
+http://:8081 {
+	reverse_proxy {$OPENCLAW_SANDBOX_URL} {
+		header_up X-Real-IP {client_ip}
+		header_up X-Forwarded-For {client_ip}
+		header_up X-Forwarded-Proto {$PUBLIC_SCHEME}
+	}
+}
