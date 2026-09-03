@@ -31,7 +31,7 @@ http://:8080 {
 			@admin header X-Auth-Request-Email {$OPENCLAW_ADMIN_EMAIL}
 			request_header @admin X-OpenClaw-Scopes "operator.admin,operator.read,operator.write,operator.approvals,operator.questions,operator.pairing,operator.talk.secrets"
 
-			reverse_proxy {$OPENCLAW_UPSTREAM} {
+			reverse_proxy {$OPENCLAW_URL} {
 				header_up X-Real-IP {client_ip}
 				header_up X-Forwarded-For {client_ip}
 				header_up X-Forwarded-Proto {$PUBLIC_SCHEME}

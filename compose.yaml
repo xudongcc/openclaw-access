@@ -14,7 +14,7 @@ services:
       OAUTH2_PROXY_CLIENT_SECRET: ${OAUTH2_PROXY_CLIENT_SECRET:?Set OAUTH2_PROXY_CLIENT_SECRET in .env}
       OAUTH2_PROXY_COOKIE_SECRET: ${OAUTH2_PROXY_COOKIE_SECRET:?Set OAUTH2_PROXY_COOKIE_SECRET in .env}
     command:
-      - --http-address=${OAUTH2_PROXY_HTTP_ADDRESS:-0.0.0.0:4180}
+      - --http-address=0.0.0.0:4180
       - --provider=github
       - --email-domain=*
       - --github-org=${GITHUB_ORG:-Kudeploy}
@@ -47,7 +47,7 @@ services:
       PUBLIC_URL: ${PUBLIC_URL:-http://192.168.28.154:8080}
       PUBLIC_SCHEME: ${PUBLIC_SCHEME:-http}
       OPENCLAW_ADMIN_EMAIL: ${OPENCLAW_ADMIN_EMAIL:-me@huangxudong.com}
-      OPENCLAW_UPSTREAM: ${OPENCLAW_UPSTREAM:-host.docker.internal:18789}
+      OPENCLAW_URL: ${OPENCLAW_URL:-http://host.docker.internal:18789}
     depends_on:
       - oauth2-proxy
     ports:
