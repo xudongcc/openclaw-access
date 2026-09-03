@@ -21,6 +21,10 @@ openssl rand -base64 32 | tr -- '+/' '-_'
 Put the generated value, the GitHub OAuth App credentials, and the Cloudflare
 API token in `.env`, then start the stack:
 
+`OAUTH2_PROXY_EMAIL_DOMAINS=*` permits any email domain; narrow it when needed.
+Leave `OAUTH2_PROXY_OIDC_ISSUER_URL` empty for GitHub, or set it when changing
+`OAUTH2_PROXY_PROVIDER` to `oidc`.
+
 ```bash
 docker compose config
 docker compose up -d

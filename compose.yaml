@@ -10,13 +10,14 @@ services:
     cap_drop:
       - ALL
     environment:
-      OAUTH2_PROXY_CLIENT_ID: ${GITHUB_CLIENT_ID:?Set GITHUB_CLIENT_ID in .env}
-      OAUTH2_PROXY_CLIENT_SECRET: ${GITHUB_CLIENT_SECRET:?Set GITHUB_CLIENT_SECRET in .env}
+      OAUTH2_PROXY_PROVIDER: ${OAUTH2_PROXY_PROVIDER:?Set OAUTH2_PROXY_PROVIDER in .env}
+      OAUTH2_PROXY_OIDC_ISSUER_URL: ${OAUTH2_PROXY_OIDC_ISSUER_URL:-}
+      OAUTH2_PROXY_CLIENT_ID: ${OAUTH2_PROXY_CLIENT_ID:?Set OAUTH2_PROXY_CLIENT_ID in .env}
+      OAUTH2_PROXY_CLIENT_SECRET: ${OAUTH2_PROXY_CLIENT_SECRET:?Set OAUTH2_PROXY_CLIENT_SECRET in .env}
       OAUTH2_PROXY_COOKIE_SECRET: ${OAUTH2_PROXY_COOKIE_SECRET:?Set OAUTH2_PROXY_COOKIE_SECRET in .env}
+      OAUTH2_PROXY_EMAIL_DOMAINS: ${OAUTH2_PROXY_EMAIL_DOMAINS:-*}
     command:
       - --http-address=0.0.0.0:4180
-      - --provider=github
-      - --email-domain=*
       - --upstream=static://202
       - --reverse-proxy=true
       - --set-xauthrequest=true
