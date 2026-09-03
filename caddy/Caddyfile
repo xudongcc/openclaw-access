@@ -5,7 +5,7 @@
 	}
 }
 
-claw.kudeploy.com {
+{$OPENCLAW_DOMAIN} {
 	import cloudflare_tls
 
 	handle /oauth2/* {
@@ -24,7 +24,7 @@ claw.kudeploy.com {
 
 				@unauthorized status 401
 				handle_response @unauthorized {
-					redir * /oauth2/sign_in?rd=https://claw.kudeploy.com{uri}
+					redir * /oauth2/sign_in?rd=https://{$OPENCLAW_DOMAIN}{uri}
 				}
 			}
 
@@ -33,7 +33,7 @@ claw.kudeploy.com {
 	}
 }
 
-claw-artifacts.kudeploy.com {
+{$OPENCLAW_MCP_APPS_DOMAIN} {
 	import cloudflare_tls
 	reverse_proxy host.docker.internal:18790
 }
