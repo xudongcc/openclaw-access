@@ -35,7 +35,7 @@ on port `443`; oauth2-proxy is available only on the private Compose network
 and OpenClaw remains bound to host loopback.
 
 MCP Apps and dashboard widgets use the dedicated, unauthenticated sandbox
-origin <https://claw-artifacts.kudeploy.com>, which proxies only to OpenClaw's sandbox
+origin <https://claw-mcp-apps.kudeploy.com>, which proxies only to OpenClaw's sandbox
 listener on port `18790`.
 
 Certificates are issued and renewed through the Cloudflare DNS challenge.
