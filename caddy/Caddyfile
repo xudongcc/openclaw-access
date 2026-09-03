@@ -1,17 +1,16 @@
-claw.kudeploy.com {
+(cloudflare_tls) {
 	tls {
 		dns cloudflare {env.CLOUDFLARE_API_TOKEN}
 		propagation_delay 5s
 		resolvers 173.245.59.96 172.64.33.96
 	}
+}
+
+claw.kudeploy.com {
+	import cloudflare_tls
 
 	handle /oauth2/* {
-		reverse_proxy oauth2-proxy:4180 {
-			header_up X-Real-IP {client_ip}
-			header_up X-Forwarded-For {client_ip}
-			header_up X-Forwarded-Proto https
-			header_up X-Forwarded-Uri {uri}
-		}
+		reverse_proxy oauth2-proxy:4180
 	}
 
 	handle {
@@ -22,10 +21,7 @@ claw.kudeploy.com {
 
 			forward_auth oauth2-proxy:4180 {
 				uri /oauth2/auth
-				header_up X-Real-IP {client_ip}
-				header_up X-Forwarded-For {client_ip}
-				header_up X-Forwarded-Proto https
-				copy_headers X-Auth-Request-User X-Auth-Request-Email
+				copy_headers X-Auth-Request-Email
 
 				@unauthorized status 401
 				handle_response @unauthorized {
@@ -33,25 +29,12 @@ claw.kudeploy.com {
 				}
 			}
 
-			reverse_proxy host.docker.internal:18789 {
-				header_up X-Real-IP {client_ip}
-				header_up X-Forwarded-For {client_ip}
-				header_up X-Forwarded-Proto https
-			}
+			reverse_proxy host.docker.internal:18789
 		}
 	}
 }
 
 claw-artifacts.kudeploy.com {
-	tls {
-		dns cloudflare {env.CLOUDFLARE_API_TOKEN}
-		propagation_delay 5s
-		resolvers 173.245.59.96 172.64.33.96
-	}
-
-	reverse_proxy host.docker.internal:18790 {
-		header_up X-Real-IP {client_ip}
-		header_up X-Forwarded-For {client_ip}
-		header_up X-Forwarded-Proto https
-	}
+	import cloudflare_tls
+	reverse_proxy host.docker.internal:18790
 }
