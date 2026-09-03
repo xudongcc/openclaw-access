@@ -4,7 +4,7 @@ services:
   oauth2-proxy:
     image: quay.io/oauth2-proxy/oauth2-proxy:v7.15.4
     network_mode: host
-    restart: unless-stopped
+    restart: always
     read_only: true
     security_opt:
       - no-new-privileges:true
@@ -33,7 +33,7 @@ services:
   caddy:
     image: caddy:2.11.4-alpine
     network_mode: host
-    restart: unless-stopped
+    restart: always
     read_only: true
     security_opt:
       - no-new-privileges:true
